@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'tw.moe.r20'
-version '1.0-SNAPSHOT'
+version '1.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -27,4 +27,4 @@ jar {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
-compileJava.options.encoding("UTF-8");
+compileJava.options.encoding("UTF-8")

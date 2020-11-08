@@ -1,17 +1,15 @@
 package tw.moe.r20
 
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import java.awt.*
 import java.awt.List
-import java.awt.event.*
-import java.awt.image.BufferedImage
+import java.awt.event.ActionListener
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
 import java.io.File
 import java.nio.file.Files
-import java.nio.file.Path
 import java.nio.file.Paths
 import javax.imageio.ImageIO
-import javax.swing.BoxLayout
 
 class MainFrame: Frame() {
     private val imgShower = ImgShower("", 'j')
@@ -209,6 +207,7 @@ class MainFrame: Frame() {
     }
 
     private fun refreshComicList() {
+        comicList.removeAll()
         for (result in searchBuff) comicList.add(result.asJsonObject.get("title").asJsonObject.get(language).asString)
     }
 
