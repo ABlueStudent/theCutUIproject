@@ -3,7 +3,6 @@ package tw.moe.r20
 import com.google.gson.JsonElement
 import java.awt.*
 import java.awt.List
-import java.awt.event.ActionListener
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.io.File
@@ -12,7 +11,7 @@ import java.nio.file.Paths
 import javax.imageio.ImageIO
 
 class MainFrame: Frame() {
-    private val imgShower = ImgShower("", 'j')
+    private val imgShower = ImgShower("", "j")
     private val comicList = List()
     private var savePath = ".\\Downloads\\"
     private var page = 1
@@ -57,12 +56,12 @@ class MainFrame: Frame() {
 
         val saveTo = MenuItem("Export to...")
         properties.add(saveTo)
-        saveTo.addActionListener(ActionListener {
-            val dialog: Dialog = Dialog(this)
+        saveTo.addActionListener {
+            val dialog = Dialog(this)
             dialog.title = "Set export path"
-            dialog.setSize(200,100)
-            dialog.layout = GridLayout(2,1)
-            dialog.addWindowListener(object: WindowAdapter () {
+            dialog.setSize(200, 100)
+            dialog.layout = GridLayout(2, 1)
+            dialog.addWindowListener(object : WindowAdapter() {
                 override fun windowClosing(e: WindowEvent?) {
                     super.windowClosing(e)
                     dialog.dispose()
@@ -72,26 +71,26 @@ class MainFrame: Frame() {
             dialog.add(textField)
             val button = Button("Ok")
             dialog.add(button)
-            button.addActionListener(ActionListener {
+            button.addActionListener {
                 this.savePath = textField.text
                 dialog.dispose()
-            })
+            }
 
             dialog.isVisible = true
-        })
+        }
 
         val exit = MenuItem("Exit")
         properties.add(exit)
-        exit.addActionListener(ActionListener { this.dispose() })
+        exit.addActionListener { this.dispose() }
 
-        val search = MenuItem("Search")
+        val search = MenuItem("Download by license plate.")
         view.add(search)
-        search.addActionListener(ActionListener {
-            val dialog: Dialog = Dialog(this)
-            dialog.title = "Search"
-            dialog.setSize(400,150)
-            dialog.layout = GridLayout(2,1)
-            dialog.addWindowListener(object: WindowAdapter () {
+        search.addActionListener {
+            val dialog = Dialog(this)
+            dialog.title = "Download by license plate."
+            dialog.setSize(400, 150)
+            dialog.layout = GridLayout(2, 1)
+            dialog.addWindowListener(object : WindowAdapter() {
                 override fun windowClosing(e: WindowEvent?) {
                     super.windowClosing(e)
                     dialog.dispose()
@@ -102,39 +101,39 @@ class MainFrame: Frame() {
             dialog.add(textField)
             val button = Button("Ok")
             dialog.add(button)
-            button.addActionListener(ActionListener {
+            button.addActionListener {
                 val info = NhentaiProvider().getInfo(textField.text)
-                val result_id = info.asJsonObject.get("id").asString + "\\"
-                val media_id = info.asJsonObject.get("media_id").asString
-                val media_length = info.asJsonObject.get("num_pages").asInt
+                val resultId = info.asJsonObject.get("id").asString + "\\"
+                val mediaId = info.asJsonObject.get("media_id").asString
+                val mediaLength = info.asJsonObject.get("num_pages").asInt
 
-                downloader(info,result_id,media_id,media_length)
+                downloader(info, resultId, mediaId, mediaLength)
                 dialog.dispose()
-            })
+            }
 
-            dialog.isVisible=true
-        })
+            dialog.isVisible = true
+        }
 
         val about = MenuItem("About")
         help.add(about)
-        about.addActionListener(ActionListener {
-            val dialog: Dialog = Dialog(this)
+        about.addActionListener {
+            val dialog = Dialog(this)
             dialog.title = "About"
-            dialog.setSize(400,150)
+            dialog.setSize(400, 150)
             dialog.layout = BorderLayout()
-            dialog.addWindowListener(object: WindowAdapter () {
+            dialog.addWindowListener(object : WindowAdapter() {
                 override fun windowClosing(e: WindowEvent?) {
                     super.windowClosing(e)
                     dialog.dispose()
                 }
             })
 
-            val textArea = TextArea("A interest toy.\n" + "E-Mail: 108021063@live.asia.edu.tw",2,34,TextArea.SCROLLBARS_NONE)
+            val textArea = TextArea("A interest toy.\n" + "E-Mail: 108021063@live.asia.edu.tw", 2, 34, TextArea.SCROLLBARS_NONE)
             textArea.isEditable = false
             dialog.add(textArea, BorderLayout.CENTER)
 
             dialog.isVisible = true
-        })
+        }
     }
 
     private fun createMainContainer() {
@@ -154,25 +153,25 @@ class MainFrame: Frame() {
 
         val downloadButton = Button("Download")
         halfContainer.add(downloadButton)
-        downloadButton.addActionListener(ActionListener {
+        downloadButton.addActionListener {
             for (result in searchBuff) {
-                if (result.asJsonObject.get("title").asJsonObject.get(language).asString.equals(comicList.selectedItem.toString())) {
-                    val result_id = result.asJsonObject.get("id").asString + "\\"
-                    val media_id = result.asJsonObject.get("media_id").asString
-                    val media_length = result.asJsonObject.get("num_pages").asInt
+                if (result.asJsonObject.get("title").asJsonObject.get(language).asString == comicList.selectedItem.toString()) {
+                    val resultId = result.asJsonObject.get("id").asString + "\\"
+                    val mediaId = result.asJsonObject.get("media_id").asString
+                    val mediaLength = result.asJsonObject.get("num_pages").asInt
 
-                    downloader(result, result_id, media_id, media_length)
+                    downloader(result, resultId, mediaId, mediaLength)
                 }
             }
-        })
+        }
 
         val moreButton = Button("More...")
         halfContainer.add(moreButton)
-        moreButton.addActionListener(ActionListener {
+        moreButton.addActionListener {
             ++this.page
             this.searchBuff.addAll(NhentaiProvider().search("language:chinese", page).get("result").asJsonArray)
             refreshComicList()
-        })
+        }
 
         this.add(halfContainer, BorderLayout.PAGE_END)
     }
@@ -182,15 +181,15 @@ class MainFrame: Frame() {
     }
 
     private fun renderingList() {
-        comicList.addActionListener(ActionListener {
+        comicList.addActionListener {
             for (result in searchBuff) {
-                if (result.asJsonObject.get("title").asJsonObject.get(language).asString.equals(comicList.selectedItem.toString())) {
+                if (result.asJsonObject.get("title").asJsonObject.get(language).asString == comicList.selectedItem.toString()) {
                     imgShower.imgID = result.asJsonObject.get("media_id").asString
-                    imgShower.type = result.asJsonObject.get("images").asJsonObject.get("thumbnail").asJsonObject.get("t").asCharacter
+                    imgShower.type = result.asJsonObject.get("images").asJsonObject.get("thumbnail").asJsonObject.get("t").asString
                     imgShower.repaint()
                 }
             }
-        })
+        }
     }
 
     private fun downloader(result:JsonElement ,result_id: String, media_id: String, media_length: Int) {
@@ -199,9 +198,9 @@ class MainFrame: Frame() {
         //超速的下載
         Thread{
             for (i in 1..media_length) {
-                val prefix = result.asJsonObject.get("images").asJsonObject.get("pages").asJsonArray[i-1].asJsonObject.get("t").asCharacter
-                if (prefix == 'j') File("$savePath$result_id$i.jpg").writeBytes(NhentaiProvider().getImage(media_id, i, prefix).readAllBytes())
-                if (prefix == 'p') File("$savePath$result_id$i.png").writeBytes(NhentaiProvider().getImage(media_id, i, prefix).readAllBytes())
+                val prefix = result.asJsonObject.get("images").asJsonObject.get("pages").asJsonArray[i - 1].asJsonObject.get("t").asString
+                if (prefix == "j") File("$savePath$result_id$i.jpg").writeBytes(NhentaiProvider().getImage(media_id, i, prefix).readAllBytes())
+                if (prefix == "p") File("$savePath$result_id$i.png").writeBytes(NhentaiProvider().getImage(media_id, i, prefix).readAllBytes())
             }
         }.start()
     }
@@ -211,10 +210,10 @@ class MainFrame: Frame() {
         for (result in searchBuff) comicList.add(result.asJsonObject.get("title").asJsonObject.get(language).asString)
     }
 
-    class ImgShower(var imgID: String, var type: Char) : Component() {
+    class ImgShower(var imgID: String, var type: String) : Component() {
         override fun paint(g: Graphics?) {
             super.paint(g)
-            g?.drawImage(ImageIO.read(NhentaiProvider().getThumb(imgID, type)),0,0,null)
+            g?.drawImage(ImageIO.read(NhentaiProvider().getThumb(imgID, type)), 0, 0, null)
         }
     }
 }

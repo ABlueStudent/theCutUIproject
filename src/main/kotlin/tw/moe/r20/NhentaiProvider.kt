@@ -2,9 +2,9 @@ package tw.moe.r20
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import okhttp3.*
-import java.awt.image.BufferedImage
-import java.io.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.io.InputStream
 
 
 class NhentaiProvider {
@@ -57,35 +57,35 @@ class NhentaiProvider {
         }
     }
 
-    fun getThumb(media_id: String, type: Char): InputStream {
+    fun getThumb(media_id: String, type: String): InputStream {
         val request: Request
-        if (type == 'j') {
+        if (type == "j") {
             request = Request.Builder()
                     .url("$thumbPrefix$media_id/thumb.jpg")
-                    .addHeader(headerName,headerValue)
+                    .addHeader(headerName, headerValue)
                     .build()
             return client.newCall(request).execute().body!!.byteStream()
-        }else if (type == 'p') {
+        } else if (type == "p") {
             request = Request.Builder()
                     .url("$thumbPrefix$media_id/thumb.png")
-                    .addHeader(headerName,headerValue)
+                    .addHeader(headerName, headerValue)
                     .build()
             return client.newCall(request).execute().body!!.byteStream()
         }
         return InputStream.nullInputStream()
     }
 
-    fun getImage(media_id: String, img: Int, type: Char): InputStream {
-        if (type == 'p') {
+    fun getImage(media_id: String, img: Int, type: String): InputStream {
+        if (type == "p") {
             val request: Request = Request.Builder()
                     .url("$imagePrefix$media_id/$img.png")
-                    .addHeader(headerName,headerValue)
+                    .addHeader(headerName, headerValue)
                     .build()
             return client.newCall(request).execute().body!!.byteStream()
-        }else if (type == 'j') {
+        } else if (type == "j") {
             val request: Request = Request.Builder()
                     .url("$imagePrefix$media_id/$img.jpg")
-                    .addHeader(headerName,headerValue)
+                    .addHeader(headerName, headerValue)
                     .build()
             return client.newCall(request).execute().body!!.byteStream()
         }
